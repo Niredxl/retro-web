@@ -1,10 +1,21 @@
-
+import Squares from './component/Squares';
 
 function App() {
   return (
     <>
-    <p>Hello World</p>
-    <p>Bye World</p>
+    <div >
+  <Squares
+    speed={0.25}
+    squareSize={50}
+    direction="diagonal"
+    borderColor="#EB8714"
+    hoverFillColor="#EB8714"
+  /></div>
+    <div className="Header"><p>Hello</p></div>
+    <div className="Hero"></div>
+    <div className="LaunchButtons"></div>
+    <div className="CoreList"></div>
+    <div className="Footer"></div>
     </>
   );
 }

@@ -2,5 +2,5 @@
 
 ## dependencies
 
-gsap
-react-icons
+- gsap
+- react-icons
