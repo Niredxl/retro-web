@@ -1,4 +1,5 @@
 import Squares from './component/Squares';
+import Header from './component/header'
 
 function App() {
   return (
@@ -11,7 +12,7 @@ function App() {
     borderColor="#EB8714"
     hoverFillColor="#EB8714"
   /></div>
-    <div className="Header"><p>Hello</p></div>
+    <Header />
     <div className="Hero"></div>
     <div className="LaunchButtons"></div>
     <div className="CoreList"></div>
