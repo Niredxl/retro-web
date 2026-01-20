@@ -9,7 +9,6 @@ const navLinks = [
   { title: "Home", href: "/"},
   { title: "Code", href: "/"},
   { title: "Documentation", href: "/docs"},
-  { title: "Github Repo", href: "/"}
 ];
 
 const Navbar = () => {
@@ -66,7 +65,7 @@ const Navbar = () => {
     };
 
     return (
-    <header className="z-50">
+    <header className="z-50 font-mono">
       <nav className="w-full flex justify-between items-center py-8 lg:py-4 px-2">
         <div className="flex items-center gap-[1ch]">
           <div className="w-5 h-5 bg-transparent rounded-full" />
@@ -80,7 +79,9 @@ const Navbar = () => {
             <NavLink to="/" className="text-black font-mono hover:text-orange-500"><AnimatedLink title={"Home"} /></NavLink>
             <NavLink to="/code" className="text-black font-mono hover:text-orange-500"><AnimatedLink title={"Code"} /></NavLink>
             <NavLink to="/docs" className="text-black font-mono hover:text-orange-500"><AnimatedLink title={"Documentation"} /></NavLink>
-            <NavLink to="/" className="text-black font-mono hover:text-orange-500"><AnimatedLink title={"Github Repo"} /></NavLink>
+            <a href="https://github.com/Niredxl/retro-web" target="_blank" rel="noopener norefferrer"
+              className="text-black font-mono hover:text-orange-500" 
+            ><AnimatedLink title={"Github Repo"} /></a>
           
         </div>
         <div
@@ -130,6 +131,12 @@ const Navbar = () => {
                 })}
               </motion.div>
             </div>
+            <div className="flex justify-center">
+                <a href="https://github.com/Niredxl/retro-web" target="_blank" rel="noopener norefferrer"
+              className=" text-black font-mono hover:text-orange-500 text-1xl" 
+              ><AnimatedLink title={"Github Repo"} /></a>
+            </div>
+            
           </motion.div>
         )}
       </AnimatePresence>

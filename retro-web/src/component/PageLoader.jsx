@@ -17,7 +17,7 @@ const PageLoader = () => (
             <motion.div
                 animate={{ rotate: 360 }}
                 transition={{ repeat: Infinity, duration: 1, ease: "linear" }}>
-                    <AiOutlineLoading size={50} color="#EB8714"/>
+                    <AiOutlineLoading size={80} color="#EB8714"/>
             </motion.div>
 
     </motion.div>

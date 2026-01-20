@@ -25,7 +25,7 @@ function App() {
       <>
         <div>
         <Squares
-        speed={0.25}
+        speed={0.30}
         squareSize={65}
         direction="diagonal"
         borderColor="#EB8714"
