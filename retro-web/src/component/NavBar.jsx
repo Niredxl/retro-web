@@ -1,14 +1,14 @@
-import { React, useState } from "react";
+import { React, useState, useEffect } from "react";
 import AnimatedLink from './AnimatedLinks'
 import { AnimatePresence, motion } from "framer-motion";
 import logo from "../assets/logo.svg"
-import { Link } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 
 // destinations for the navbar links
 const navLinks = [
   { title: "Home", href: "/"},
   { title: "Code", href: "/"},
-  { title: "Documentation", href: "/"},
+  { title: "Documentation", href: "/docs"},
   { title: "Github Repo", href: "/"}
 ];
 
@@ -18,6 +18,15 @@ const Navbar = () => {
     const toggleMenu = () => {
         setOpen((prevOpen) => !prevOpen);
     };
+
+    // scroll locking
+    useEffect(() => {
+      if (open) {
+        document.body.style.overflow = "hidden";
+      } else {
+        document.body.style.overflow = "unset";
+      }
+    }, [open]);
 
     //menu animation
     const menuVars = {
@@ -41,7 +50,7 @@ const Navbar = () => {
         },
     };
     const containerVars = {
-        inital: {
+        initial: {
             transition: {
                 staggerChildren: 0.09,
                 staggerDirection: -1,
@@ -57,7 +66,7 @@ const Navbar = () => {
     };
 
     return (
-    <header>
+    <header className="z-50">
       <nav className="w-full flex justify-between items-center py-8 lg:py-4 px-2">
         <div className="flex items-center gap-[1ch]">
           <div className="w-5 h-5 bg-transparent rounded-full" />
@@ -68,10 +77,10 @@ const Navbar = () => {
           </span>
         </div>
         <div className="lg:flex hidden gap-12 text-md text-zinc-400">
-            <Link to="/" className="text-black font-mono hover:text-orange-500"><AnimatedLink title={"Home"} /></Link>
-            <Link to="/code" className="text-black font-mono hover:text-orange-500"><AnimatedLink title={"Code"} /></Link>
-            <Link to="/docs" className="text-black font-mono hover:text-orange-500"><AnimatedLink title={"Documentation"} /></Link>
-            <Link to="/" className="text-black font-mono hover:text-orange-500"><AnimatedLink title={"Github Repo"} /></Link>
+            <NavLink to="/" className="text-black font-mono hover:text-orange-500"><AnimatedLink title={"Home"} /></NavLink>
+            <NavLink to="/code" className="text-black font-mono hover:text-orange-500"><AnimatedLink title={"Code"} /></NavLink>
+            <NavLink to="/docs" className="text-black font-mono hover:text-orange-500"><AnimatedLink title={"Documentation"} /></NavLink>
+            <NavLink to="/" className="text-black font-mono hover:text-orange-500"><AnimatedLink title={"Github Repo"} /></NavLink>
           
         </div>
         <div
@@ -114,6 +123,7 @@ const Navbar = () => {
                         key={index}
                         title={link.title}
                         href={link.href}
+                        toggleMenu={toggleMenu}
                       />
                     </div>
                   );
@@ -145,12 +155,16 @@ const mobileLinkVars = {
     },
 };
 
-const MobileNavLink = ({ title, href }) => {
+const MobileNavLink = ({ title, href, toggleMenu }) => {
     return (
         <motion.div
         variants={mobileLinkVars}
-        className="text-5xl uppercase text-black">
-            <a href={href}>{title}</a>
+        className="text-5xl uppercase text-black font-mono">
+          <NavLink 
+          to={href}
+          onClick={toggleMenu}
+          >{title}</NavLink>
+            
         </motion.div>
     );
 };
