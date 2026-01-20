@@ -1,23 +1,21 @@
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Squares from './component/Squares';
-import Header from './component/header'
+import AnimatedLink from './component/AnimatedLinks';
+import NavBar from './component/NavBar';
+import Code from './reference/Codeg'
+import Home from "./links/Home"
+import Documentation from './reference/Docg';
 
 function App() {
   return (
-    <>
-    <div >
-  <Squares
-    speed={0.25}
-    squareSize={50}
-    direction="diagonal"
-    borderColor="#EB8714"
-    hoverFillColor="#EB8714"
-  /></div>
-    <Header />
-    <div className="Hero"></div>
-    <div className="LaunchButtons"></div>
-    <div className="CoreList"></div>
-    <div className="Footer"></div>
-    </>
+    <BrowserRouter>
+      <Routes>
+        
+        <Route path="/" element={<Home />} />
+        <Route path="/docs" element={<Documentation />} />
+        <Route path="/code" element={<Code />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 

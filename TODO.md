@@ -1,6 +1,10 @@
-# Phase one 
+# Phase one
+
 ## Environment and core compiling
+
 - Initialize React project
 - Setup Emscripten
 - Establish WASM Bridge
-- Basic logic implementaion
+- Setup python backend for user saving and authentication
+
+

@@ -9,12 +9,8 @@ function Header(){
       <nav className="bg-white border-gray-200 px-4 lg:px-6 py-2.5 dark:bg-[#f3d8d3]/50 shadow">
         <div className="flex flex-wrap justify-between items-center mx-auto max-w-screen-lg">
           <a href="#" className="flex items-center">
-              <img src={logo}
-                alt="logo"
-                className="h-8 w-auto"
-              />
+              <img src={logo} alt="logo" className="h-8 w-auto"/>
           </a>
-
           <div
             className={`flex-col md:flex md:flex-row items-center w-full md:w-auto md:order-2 transition-all duration-300 ${
               nav
@@ -37,7 +33,7 @@ function Header(){
               <li>
                 <a
                   href="#"
-                  className="block py-2 pr-4 pl-3 text-gray-700 border-b border-gray-100 hover:bg-gray-50 md:hover:bg-transparent md:border-0 md:hover:text-primary-700 md:p-0 dark:text-gray-400 md:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-black md:dark:hover:bg-transparent dark:border-gray-700"
+                  className="block py-2 pr-4 pl-3 text-gray-700 border-b border-gray-100 hover:bg-gray-50 md:hover:bg-transparent md:border-0 md:hover:text-primary-700 md:p-0 dark:text-gray-400 md:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700"
                 >
                   Pricing
                 </a>
