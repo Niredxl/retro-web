@@ -10,8 +10,10 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@cursorify/react": "^0.0.43",
     "@tailwindcss/vite": "^4.1.18",
     "autoprefixer": "^10.4.23",
+    "classnames": "^2.5.1",
     "framer-motion": "^12.27.1",
     "gsap": "^3.14.2",
     "postcss": "^8.5.6",

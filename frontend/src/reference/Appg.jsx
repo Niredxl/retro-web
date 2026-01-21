@@ -57,7 +57,7 @@ function App() {
             </div>
             
             {/* Hero Image Placeholder */}
-            <div className="h-64 border-2 border-[#EB8714] bg-white/50 flex items-center justify-center text-[#EB8714] text-xl font-bold">
+            <div className="h-64 border-2 border-primary bg-white/50 flex items-center justify-center text-primary text-xl font-bold">
               IMAGE
             </div>
           </section>
@@ -67,16 +67,16 @@ function App() {
           <section className="flex flex-col md:flex-row justify-center gap-8 py-10 mb-16 border-y-2 border-dotted border-blue-400">
             <button className="
               px-8 py-4 bg-white 
-              border-2 border-[#EB8714] text-[#EB8714] 
-              font-bold hover:bg-[#EB8714] hover:text-white 
+              border-2 border-primary text-primary 
+              font-bold hover:bg-primary hover:text-white 
               transition-all duration-200
             ">
               Launch New Project
             </button>
             <button className="
               px-8 py-4 bg-white 
-              border-2 border-[#EB8714] text-[#EB8714] 
-              font-bold hover:bg-[#EB8714] hover:text-white 
+              border-2 border-primary text-primary 
+              font-bold hover:bg-primary hover:text-white 
               transition-all duration-200
             ">
               Launch Saved Project
@@ -86,7 +86,7 @@ function App() {
           {/* AVAILABLE CORES GRID */}
           <section className="mb-20">
             {/* Section Title with Hard Shadow */}
-            <div className="inline-block bg-[#EB8714] text-white px-6 py-2 mb-8 text-xl font-bold shadow-[4px_4px_0px_#000]">
+            <div className="inline-block bg-primary text-white px-6 py-2 mb-8 text-xl font-bold shadow-[4px_4px_0px_#000]">
               Available Cores
             </div>
             
@@ -100,7 +100,7 @@ function App() {
                     {item.desc}
                   </p>
                   <span className={`text-sm font-bold mt-auto ${
-                    item.status === 'Available' ? 'text-[#EB8714]' : 'text-gray-500'
+                    item.status === 'Available' ? 'text-primary' : 'text-gray-500'
                   }`}>
                     {item.status}
                   </span>
@@ -111,7 +111,7 @@ function App() {
         </div>
 
         {/* FOOTER */}
-        <footer className="w-full bg-[#2b2010] text-gray-400 py-8 text-center border-t-4 border-[#EB8714] mt-auto">
+        <footer className="w-full bg-[#2b2010] text-gray-400 py-8 text-center border-t-4 border-primary mt-auto">
           <p className="text-sm">Copyright © Derin Alex</p>
         </footer>
 

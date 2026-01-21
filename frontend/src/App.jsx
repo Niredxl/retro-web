@@ -1,6 +1,8 @@
 import { useLocation, Routes, Route } from 'react-router-dom';
 import {useState, useEffect } from 'react';
 import { AnimatePresence, motion} from "framer-motion";
+
+
 import PageLoader from './component/PageLoader'
 import Squares from './component/Squares';
 import AnimatedLink from './component/AnimatedLinks';
@@ -24,21 +26,21 @@ function App() {
   return (
       <>
         <div>
-        <Squares
-        speed={0.30}
-        squareSize={65}
-        direction="diagonal"
-        borderColor="#EB8714"
-        hoverFillColor="#EB8714"
-        />
-      </div>
-      <div className="pr-4 bg-white/50">
-        <NavBar/>
-      </div>
+          <Squares
+          speed={0.30}
+          squareSize={65}
+          direction="diagonal"
+          borderColor="#EB8714"
+          hoverFillColor="#EB8714"
+          />
+        </div>
+        <div className="pr-4 bg-white/50">
+          <NavBar/>
+        </div>
         <AnimatePresence mode="wait">
           {isLoading ? (
             <PageLoader />
-          ) : ( 
+            ) : ( 
             <motion.div
               key={location.pathname}
               initial={{ opacity: 0 }}
@@ -49,10 +51,10 @@ function App() {
                   <Route path="/docs" element={<Docs />} />
                   <Route path="/code" element={<Code />} />
                 </Routes>
-              </motion.div>
-          )}
-          
+              </motion.div>)
+          }
         </AnimatePresence>
+        
       </>
   );
 }

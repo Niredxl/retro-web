@@ -4,4 +4,12 @@
 @theme {
     --font-sans: "Nunito Sans", ui-sans-serif, system-ui, sans-serif;
     --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+
+    --color-primary: #EB8714;
+    --color-secondary: #2F2204;
+
+    --grid-template-columns-sidebar: 300px auto;
+    --grid-template-columns-sidebar-collapsed: 64px auto;
+    
 }
+
