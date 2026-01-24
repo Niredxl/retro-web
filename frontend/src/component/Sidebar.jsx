@@ -4,12 +4,17 @@ import { Link } from 'react-router-dom'
 import { NavBarLinks} from "./NavBarLinks";
 import { GoSidebarCollapse, GoSidebarExpand } from "react-icons/go";
 
-const Sidebar = ({ collapsed, setCollapsed }) => {
+const Sidebar = ({ collapsed,shown, setCollapsed }) => {
     const Icon = collapsed ? GoSidebarCollapse : GoSidebarExpand;
 
     return (
         <div className={classNames({
-            "bg-primary font-mono font-bold tracking-wide text-zinc-50 z-20 shadow-[8px_8px_0px_#C0C0C0BF]": true,
+            " bg-primary font-mono font-bold tracking-wide text-zinc-50 z-20 shadow-[8px_8px_0px_#C0C0C0BF] h-full": true,
+            "transition-all duration-300 ease-in ease-out": true,
+            "fixed md:static md:translate-x-0": true,
+            "w-[300px]": !collapsed,
+            "w-[300px] md:w-16" : collapsed,
+            "-translate-x-full md:translate-x-0": !shown,
         })}>
             
             <div className={classNames({
@@ -23,11 +28,11 @@ const Sidebar = ({ collapsed, setCollapsed }) => {
                 })}>
                     {!collapsed && <span className="whitespace-nowrap">RetroWeb Docs</span>}
                     <button className={classNames({
-                        "grid place-content-center": true,
+                        "hidden md:grid place-content-center": true,
                         "hover:bg-primary": true,
                         "w-10 h-10 rounded-full": true,
                     })}
-                    onClick={() => setCollapsed(!collapsed)}>
+                    onClick={() => setCollapsed(!collapsed)} >
                         <Icon className="w-5 h-5" />
                     </button>
                    

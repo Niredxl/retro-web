@@ -30,7 +30,7 @@ function App() {
           </div>
           <div>
             <div className="h-auto border-2 border-primary flex items-center justify-center">
-              <img src="/cassete.jpg" alt="Hero Banner"
+              <img src="/cassete.png" alt="Hero Banner"
               className="w-full h-auto rounded-lg shadow-md"></img>
             </div>
           </div>

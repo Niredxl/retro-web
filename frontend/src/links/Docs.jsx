@@ -10,9 +10,9 @@ function Docs(){
     return (
         <PageTransition>
             <SidebarLayout props="Content">
-                <div className="flex justify-center p-20 mg-10 h-dvh  bg-white/87">
+                <div className="flex justify-center min-h-screen p-6 md:p-20 bg-white/87">
                     <div className="pd-10 ">
-                        <div className="text-8xl text-center mb-5 ">Lorem ipsum dolor sit amet, consectetur adipiscing elit</div>
+                        <div className="text-4xl  text-center mb-5 md:text-8xl ">Lorem ipsum dolor sit amet, consectetur adipiscing elit</div>
                         <div>
                             <p className="text-lg text-gray-600 leading-relaxed">
                             Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque  faucibus ex sapien vitae pellentesque sem placerat. 

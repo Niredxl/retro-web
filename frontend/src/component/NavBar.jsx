@@ -65,7 +65,7 @@ const Navbar = () => {
     };
 
     return (
-    <header className="z-50 font-mono">
+    <header className="z-50 font-mono sticky">
       <nav className="w-full flex justify-between items-center py-8 lg:py-4 px-2">
         <div className="flex items-center gap-[1ch]">
           <div className="w-5 h-5 bg-transparent rounded-full" />
