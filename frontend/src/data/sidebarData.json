@@ -1,0 +1,34 @@
+[
+  {
+    "label": "chip-8",
+    "type": "category",
+    "children": [
+      {
+        "label": "hello",
+        "type": "link",
+        "path": "/chip-8/hello"
+      },
+      {
+        "label": "intro",
+        "type": "link",
+        "path": "/chip-8/intro"
+      },
+      {
+        "label": "test2",
+        "type": "link",
+        "path": "/chip-8/test2"
+      }
+    ]
+  },
+  {
+    "label": "test-2",
+    "type": "category",
+    "children": [
+      {
+        "label": "text1",
+        "type": "link",
+        "path": "/test-2/text1"
+      }
+    ]
+  }
+]
