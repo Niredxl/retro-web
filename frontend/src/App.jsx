@@ -9,6 +9,7 @@ import AnimatedLink from './component/AnimatedLinks';
 import NavBar from './component/NavBar';
 import Code from './reference/Codeg'
 import Home from "./links/Home"
+import DocsHome from './links/DocsHome';
 import Docs from './links/Docs';
 
 function App() {
@@ -48,8 +49,9 @@ function App() {
               exit={{ opacity: 0 }}>
                 <Routes location={location}>
                   <Route path="/" element={<Home />} />
-                  <Route path="/docs" element={<Docs />} />
+                  <Route path="/docs" element={<DocsHome />} />
                   <Route path="/code" element={<Code />} />
+                  <Route path="/docs/*" element={<Docs />} />
                 </Routes>
               </motion.div>)
           }

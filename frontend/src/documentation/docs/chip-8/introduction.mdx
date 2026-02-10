@@ -1,0 +1,39 @@
+# Introduction to CHIP-8
+
+**CHIP-8** is an interpreted programming language, developed by Joseph Weisbecker in the mid-1970s. It was initially used on the COSMAC VIP and Telmac 1800 8-bit microcomputers.
+
+[Image of COSMAC VIP computer]
+
+Unlike modern game consoles that run complex operating systems, CHIP-8 is a **Virtual Machine (VM)**. It doesn't exist as a physical chip; instead, it is a software specification that runs on top of other hardware.
+
+## Why Build a CHIP-8 Emulator?
+
+In the emulation community, CHIP-8 is considered the "Hello World" of emulator development. It is the perfect starting point because:
+
+1.  **Simplicity:** It has only 35 opcodes (instructions).
+2.  **Documentation:** The specification is well-documented and standard.
+3.  **Reward:** You can play classic games like *Pong*, *Tetris*, and *Space Invaders* once you finish.
+
+## Technical Specifications
+
+To build an emulator, you need to simulate the following hardware components:
+
+[Image of Chip-8 architecture diagram]
+
+### Memory
+CHIP-8 has direct access to up to **4KB (4,096 bytes)** of RAM.
+- **0x000 to 0x1FF:** Reserved for the interpreter (the font data usually goes here).
+- **0x200 to 0xFFF:** Program ROM and data.
+
+### Registers
+- **16 General Purpose Registers:** 8-bit registers named `V0` through `VF`.
+- **Index Register (I):** A 16-bit register used to store memory addresses.
+- **Program Counter (PC):** Points to the current instruction in memory.
+
+### Display
+The graphics are monochrome and very low resolution:
+- **Resolution:** 64 x 32 pixels.
+- **Drawing:** Sprites are XORed onto the screen. If a pixel is turned off by drawing, the `VF` register is set to 1 (collision detection).
+
+### Stack
+A 16-level stack is used to store the Program Counter (

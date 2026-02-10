@@ -1,0 +1,33 @@
+# Basic Opcodes
+
+CHIP-8 has 35 opcodes, which are all **2 bytes (16 bits)** long. Because memory is 1 byte wide, we must fetch two bytes from memory and merge them to form a full opcode.
+
+## Opcode Format
+
+An opcode is often represented as a hexadecimal number, like `0xA2F0`. We use variables to describe parts of the opcode:
+
+| Variable | Description |
+| :--- | :--- |
+| **NNN** | A 12-bit address (lowest 12 bits) |
+| **nn** or **kk** | An 8-bit constant (lowest 8 bits) |
+| **n** | A 4-bit constant (lowest 4 bits) |
+| **x** | A 4-bit register identifier (second nibble) |
+| **y** | A 4-bit register identifier (third nibble) |
+
+For example, in the instruction `7xkk` (ADD Vx, byte), if the opcode is `0x7305`:
+- `x` = 3 (Register V3)
+- `kk` = 05 (Add 5 to V3)
+
+## Essential Instructions
+
+Here are the most fundamental opcodes you need to get a ROM running.
+
+### 00E0 - CLS
+**Clear the display.**
+Sets all pixels on the screen to 0 (off).
+
+### 1NNN - JP addr
+**Jump to location NNN.**
+The interpreter sets the Program Counter (PC) to `NNN`.
+```c
+PC = NNN;
