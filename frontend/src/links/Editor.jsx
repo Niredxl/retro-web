@@ -25,9 +25,25 @@ const retroTheme = createTheme({
     { tag: t.number, color: '#f8f8f2' },
   ],
 });
+
+// helper to convert hex text into a byte array
+const compileHexToBytes = (codeString) => {
+  const cleanCode = codeString.replace(/;.*/g, '').replace(/\s+/g,'');
+
+  if (cleanCode.length % 2 !== 0) {
+    throw new Error("Invalid hex code length. Must be pairs of characters.");
+  }
+
+  const bytes = new Uint8Array(cleanCode.length / 2);
+  for (let i = 0; i < cleanCode.length; i += 2){
+    bytes[i/2] = parseInt(cleanCode.substring(i, i + 2), 16);
+  }
+  return bytes;
+};
+
 function Editor(){
   const [activeTab, setActiveTab] = useState('RAM');
-  const [code, setCode] = useState('; Start coding your .asm file\nMOV A, 0xFF');
+  const [code, setCode] = useState('; Basic CHIP-8 Hex\n00E0 ; Clear Screen\n1200 ; Jump to 0x200 (Loop)');
 
   const memoryRows = Array(8).fill("0000 0000 0000 0000");
 
@@ -76,7 +92,10 @@ function Editor(){
   // Render Loop
   const renderLoop = () => {
     if (coreRef.current && canvasRef.current){
-      coreRef.current.cycle();
+      for (let i = 0; i < 6; i++){
+        coreRef.current.cycle();
+      }
+      
 
       const videoBuffer = coreRef.current.getVideoBufferPointer();
 
@@ -101,6 +120,22 @@ function Editor(){
     ctx.putImageData(imgData, 0, 0);
   };
 
+  const handleAssemble = () => {
+    try {
+      if (!coreRef.current){
+        alert("Emulator core is still loading...");
+        return;
+      }
+      const romBytes = compileHexToBytes(code);
+
+      coreRef.current.loadROM(romBytes);
+
+      console.log("Build successful! ROM injected into memory.");
+    } catch (error){
+      alert("Compilation error: " + error.message);
+    }
+  };
+
   return(
   <div className="relative z-10 flex flex-col lg:flex-row flex-1 overflow-hidden border-t-2">
     <section className="w-full h-screen lg:w-1/2 bg-primary/95 p-6 lg:p-10 flex flex-col border-r-2 border-black font-mono">
@@ -113,7 +148,7 @@ function Editor(){
       </div>
 
       <div className="flex flex-wrap gap-6 mb-6 text-sm md:text-base justify-between border-b-1 ">
-          <button className="hover:underline">Assemble / Build</button>
+          <button onClick={handleAssemble} className="hover:underline">Assemble / Build</button>
           <span className="opacity-80">Import file</span>
           <button className="hover:underline">Copy</button>
           <button className="hover:underline">Clear</button>
