@@ -4,14 +4,14 @@
     "type": "category",
     "children": [
       {
-        "label": "hello",
+        "label": "introduction",
         "type": "link",
-        "path": "/chip-8/hello"
+        "path": "/chip-8/introduction"
       },
       {
-        "label": "intro",
+        "label": "opcodes",
         "type": "link",
-        "path": "/chip-8/intro"
+        "path": "/chip-8/opcodes"
       },
       {
         "label": "test2",

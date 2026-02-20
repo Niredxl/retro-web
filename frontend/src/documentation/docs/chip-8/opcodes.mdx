@@ -1,33 +1,50 @@
-# Basic Opcodes
+# CHIP-8 Instruction Set Reference
 
-CHIP-8 has 35 opcodes, which are all **2 bytes (16 bits)** long. Because memory is 1 byte wide, we must fetch two bytes from memory and merge them to form a full opcode.
+CHIP-8 uses 2-byte (16-bit) opcodes. All instructions are written in hexadecimal. 
 
-## Opcode Format
+### Key Variables
+* **`NNN`**: A 12-bit memory address (e.g., `0x200`).
+* **`NN`**: An 8-bit constant/number (e.g., `0xFF`).
+* **`X` and `Y`**: 4-bit register identifiers from `0` to `F` (representing `V0` through `VF`).
+* **`I`**: The special 16-bit Index register used for pointing to memory.
 
-An opcode is often represented as a hexadecimal number, like `0xA2F0`. We use variables to describe parts of the opcode:
+---
 
-| Variable | Description |
-| :--- | :--- |
-| **NNN** | A 12-bit address (lowest 12 bits) |
-| **nn** or **kk** | An 8-bit constant (lowest 8 bits) |
-| **n** | A 4-bit constant (lowest 4 bits) |
-| **x** | A 4-bit register identifier (second nibble) |
-| **y** | A 4-bit register identifier (third nibble) |
+## Display & Graphics
 
-For example, in the instruction `7xkk` (ADD Vx, byte), if the opcode is `0x7305`:
-- `x` = 3 (Register V3)
-- `kk` = 05 (Add 5 to V3)
+| Hex Code | Assembly Equivalent | Description |
+| :--- | :--- | :--- |
+| **`00E0`** | `CLS` | **Clear Display:** Instantly clears all pixels on the screen. |
+| **`DXYN`** | `DRW VX, VY, N` | **Draw Sprite:** Reads `N` bytes from memory starting at the address stored in `I`. Draws them to the screen as an 8xN sprite at coordinates (`VX`, `VY`). |
 
-## Essential Instructions
+---
 
-Here are the most fundamental opcodes you need to get a ROM running.
+## Control Flow (Jumps & Conditionals)
 
-### 00E0 - CLS
-**Clear the display.**
-Sets all pixels on the screen to 0 (off).
+| Hex Code | Assembly Equivalent | Description |
+| :--- | :--- | :--- |
+| **`1NNN`** | `JMP NNN` | **Jump:** Sets the Program Counter (`PC`) to `NNN`, effectively jumping to that line of code. |
+| **`3XNN`** | `SE VX, NN` | **Skip If Equal:** Skips the next instruction if the value in `VX` equals `NN`. |
+| **`4XNN`** | `SNE VX, NN` | **Skip If Not Equal:** Skips the next instruction if `VX` does not equal `NN`. |
+| **`5XY0`** | `SE VX, VY` | **Skip If Registers Equal:** Skips the next instruction if `VX` equals `VY`. |
 
-### 1NNN - JP addr
-**Jump to location NNN.**
-The interpreter sets the Program Counter (PC) to `NNN`.
-```c
-PC = NNN;
+---
+
+## Registers & Memory
+
+| Hex Code | Assembly Equivalent | Description |
+| :--- | :--- | :--- |
+| **`6XNN`** | `MOV VX, NN` | **Set Register:** Loads the exact number `NN` into register `VX`. |
+| **`7XNN`** | `ADD VX, NN` | **Add to Register:** Adds `NN` to `VX`. (Note: This does *not* set the overflow flag). |
+| **`ANNN`** | `LDI NNN` | **Set Index (`I`):** Sets the Index register `I` to point to memory address `NNN`. |
+
+---
+
+## Math & Bitwise Logic
+
+| Hex Code | Assembly Equivalent | Description |
+| :--- | :--- | :--- |
+| **`8XY0`** | `MOV VX, VY` | **Assign:** Sets `VX` to the value currently inside `VY`. |
+| **`8XY3`** | `XOR VX, VY` | **Bitwise XOR:** Applies a bitwise XOR to `VX` and `VY`, storing the result in `VX`. |
+| **`8XY4`** | `ADD VX, VY` | **Add with Carry:** Adds `VY` to `VX`. If the result is greater than 255, the `VF` register is set to 1. |
+| **`CXNN`** | `RND VX, NN` | **Random Number:** Generates a random number (0-255), applies a bitwise AND with `NN`, and stores it in `VX`. |
