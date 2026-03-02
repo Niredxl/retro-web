@@ -6,7 +6,7 @@ import { createScopedAnimate } from 'framer-motion';
 
 function App() {
   const coreData = [
-    { title: "Lorem ipsum dolor", desc: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore.", status: "Available" },
+    { title: "CHIP 8", desc: "Implemented using an emulator by James Griffin (GPL 2.0 license)", status: "Available" },
     { title: "Lorem ipsum dolor", desc: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore.", status: "Coming Soon" },
     { title: "Lorem ipsum dolor", desc: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore.", status: "Coming Soon" },
     { title: "Lorem ipsum dolor", desc: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore.", status: "Coming Soon" },

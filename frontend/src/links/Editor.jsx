@@ -6,7 +6,7 @@ import CodeMirror from '@uiw/react-codemirror';
 import { cpp } from '@codemirror/lang-cpp'; // Good fallback for Assembly
 import { createTheme } from '@uiw/codemirror-themes';
 import { tags as t } from '@lezer/highlight';
-import { animate } from "framer-motion";
+import { animate, m } from "framer-motion";
 
 const retroTheme = createTheme({
   theme: 'dark',
@@ -44,7 +44,17 @@ const compileHexToBytes = (codeString) => {
 function Editor(){
   const [activeTab, setActiveTab] = useState('RAM');
   const [code, setCode] = useState('; Basic CHIP-8 Hex\n00E0 ; Clear Screen\n1200 ; Jump to 0x200 (Loop)');
-
+  const [cpuState, setCpuState] = useState({
+    v: new Uint8Array(16),
+    pc: 0,
+    i: 0,
+    sp: 0
+  });
+  const [isPaused, setIsPaused] = useState(false);
+  const [speed, setSpeed] = useState(10);
+  const isPausedRef = useRef(isPaused);
+  const speedRef = useRef(speed);
+  const frameCountRef = useRef(0)
   const memoryRows = Array(8).fill("0000 0000 0000 0000");
 
   const canvasRef = useRef(null);
@@ -52,6 +62,53 @@ function Editor(){
   const requestRef = useRef(null);
   const wasmLoaded = useRef(false);
 
+  const handleStep = () => {
+    if (coreRef.current && isPaused) {
+      // Execute a single CPU instruction
+      coreRef.current.cycle(); 
+      
+      // Instantly update the visuals and Inspector
+      const videoBuffer = coreRef.current.getVideoBufferPointer();
+      renderToCanvas(videoBuffer);
+      updateInspectorState();
+    }
+  };
+
+  const updateInspectorState = () => {
+    if(!coreRef.current) return;
+    const vRegs = coreRef.current.getRegisters();
+    setCpuState({
+      v: new Uint8Array(vRegs),
+      pc: coreRef.current.getPC(),
+      i: coreRef.current.getI(),
+      sp: coreRef.current.getSP()
+    });
+  };
+
+  // [NEW] Reset function for the new UI
+  const handleReset = () => {
+    setIsPaused(true); // Pause execution
+    if (coreRef.current) {
+      try {
+        const romBytes = compileHexToBytes(code);
+        coreRef.current.loadROM(romBytes); // Reload the current code
+        
+        // Force a screen and inspector update
+        const videoBuffer = coreRef.current.getVideoBufferPointer();
+        renderToCanvas(videoBuffer);
+        updateInspectorState();
+      } catch (err) {
+        console.error("Reset failed: ", err);
+      }
+    }
+  };
+
+  useEffect(() => {
+    isPausedRef.current = isPaused;
+  }, [isPaused]);
+  useEffect(() => {
+    speedRef.current = speed;
+  }, [speed]);
   // WASM Bridge logic
   useEffect(() => {
     if (wasmLoaded.current) return;
@@ -92,14 +149,21 @@ function Editor(){
   // Render Loop
   const renderLoop = () => {
     if (coreRef.current && canvasRef.current){
-      for (let i = 0; i < 6; i++){
+      if (!isPausedRef.current){
+        for (let i = 0; i < speedRef.current; i++){
         coreRef.current.cycle();
+
+        const videoBuffer = coreRef.current.getVideoBufferPointer();
+        renderToCanvas(videoBuffer);
+
+        frameCountRef.current++;
+        if (frameCountRef.current % 10 === 0) {
+          updateInspectorState();
+        }
       }
       
-
-      const videoBuffer = coreRef.current.getVideoBufferPointer();
-
-      renderToCanvas(videoBuffer);
+      }
+      
     }
     requestRef.current = requestAnimationFrame(renderLoop);
   };
@@ -138,7 +202,7 @@ function Editor(){
 
   return(
   <div className="relative z-10 flex flex-col lg:flex-row flex-1 overflow-hidden border-t-2">
-    <section className="w-full h-screen lg:w-1/2 bg-primary/95 p-6 lg:p-10 flex flex-col border-r-2 border-black font-mono">
+    <section className="w-full h-auto lg:w-1/2 bg-primary/95 p-6 lg:p-10 flex flex-col border-r-2 border-black font-mono">
 
       <div className="flex flex-wrap gap-6 mb-2 text-sm md:text-base font-bold justify-between border-t-1">
           <button className="hover:underline">← Back</button>
@@ -170,14 +234,99 @@ function Editor(){
     </section>
     {/*video output*/}
     <section className="w-full lg:w-1/2 bg-white/80 p-6 lg:p-10 flex flex-col items-center overflow-y-auto">  
-      <div className="w-full max-w-lg aspect-[2/1] bg-[#1f2e2e] rounded-xl border-4 border-gray-300 shadow-inner mb-6 relative flex items-center justify-center p-2">
+      {/* The "Device" Container */}
+      <div className="w-full max-w-md bg-[#dedede] border border-[#333] rounded-[2.5rem] p-4 sm:p-6 shadow-xl flex flex-col items-center font-mono mb-10">
+        
+        {/* 1. The Screen */}
+        <div className="w-full aspect-[4/3] bg-[#2e3b2c] rounded-3xl mb-6 relative flex items-center justify-center p-2 shadow-inner overflow-hidden">
              <canvas 
                 ref={canvasRef} 
                 width={64} 
                 height={32}
                 className="w-full h-full image-pixelated"
-                style={{ imageRendering: 'pixelated' }} // Keeps pixels sharp when scaled up
+                style={{ imageRendering: 'pixelated' }} 
              />
+        </div>
+
+        {/* 2. Main Control Bar */}
+        <div className="w-11/12 bg-[#36210b] flex justify-between items-center rounded-xl px-6 py-3 shadow-[0_0_15px_rgba(0,0,0,0.3)] text-[#f8e8d4] text-sm md:text-base mb-6">
+            <button 
+              onClick={() => setIsPaused(false)} 
+              className={`hover:text-white flex items-center gap-2 transition-opacity ${!isPaused ? 'opacity-50 cursor-default' : ''}`}
+            >
+               <span className="text-[10px]">▶</span> Run
+            </button>
+            <button 
+              onClick={() => setIsPaused(true)} 
+              className={`hover:text-white transition-opacity ${isPaused ? 'opacity-50 cursor-default' : ''}`}
+            >
+                Pause
+            </button>
+            <button 
+              onClick={handleStep} 
+              disabled={!isPaused} 
+              className={`hover:text-white transition-opacity ${!isPaused ? 'opacity-30 cursor-not-allowed' : ''}`}
+            >
+                Step
+            </button>
+            <button 
+              onClick={handleReset} 
+              className="hover:text-white transition-colors"
+            >
+                Reset
+            </button>
+        </div>
+
+        {/* 3. Speed Controls */}
+        <div className="flex gap-4 text-[#36210b] text-sm font-bold">
+            <button 
+              onClick={() => setSpeed(2)} 
+              className={`border border-[#333] px-5 py-1 transition-colors ${speed === 2 ? 'bg-[#c4c4c4] shadow-inner' : 'bg-transparent hover:bg-[#d0d0d0]'}`}
+            >
+              Slow
+            </button>
+            <button 
+              onClick={() => setSpeed(10)} 
+              className={`border border-[#333] px-5 py-1 transition-colors ${speed === 10 ? 'bg-[#c4c4c4] shadow-inner' : 'bg-transparent hover:bg-[#d0d0d0]'}`}
+            >
+              1x
+            </button>
+            <button 
+              onClick={() => setSpeed(30)} 
+              className={`border border-[#333] px-5 py-1 transition-colors ${speed === 30 ? 'bg-[#c4c4c4] shadow-inner' : 'bg-transparent hover:bg-[#d0d0d0]'}`}
+            >
+              Fast
+            </button>
+        </div>
+
+      </div>
+        
+        <div className="grid grid-cols-1 md:grid-cols- gap-2">
+          <div className="w-full max-w-lg bg-[#2B1B09] border-2 border-black rounded-xl p-4 font-mono text-[#E1AD66] shadow-lg">
+            <div className="flex justify-between items-center gap-10 border-b border-[#4D361A] pb-2 mb-4">
+                <h3 className="font-bold text-lg">CPU Inspector</h3>
+                <span className="text-xs opacity-70">Live State Tracking</span>
+            </div>
+
+            {/* Pointers Row */}
+            <div className="grid grid-cols-3 gap-4 mb-4 text-center bg-[#1a1005] py-2 rounded">
+                <div><span className="text-white opacity-50 text-xs block">PC</span> 0x{cpuState.pc.toString(16).padStart(4, '0').toUpperCase()}</div>
+                <div><span className="text-white opacity-50 text-xs block">INDEX (I)</span> 0x{cpuState.i.toString(16).padStart(4, '0').toUpperCase()}</div>
+                <div><span className="text-white opacity-50 text-xs block">STACK (SP)</span> 0x{cpuState.sp.toString(16).padStart(2, '0').toUpperCase()}</div>
+            </div>
+
+            {/* V-Registers Grid */}
+            <h4 className="text-sm font-bold mb-2 opacity-80">V-Registers (Flags)</h4>
+            <div className="grid grid-cols-4 gap-2 text-sm text-center">
+                {Array.from(cpuState.v).map((val, idx) => (
+                    <div key={idx} className={`p-1 border border-[#4D361A] rounded ${idx === 15 ? 'bg-red-900/30 border-red-500' : 'bg-[#1a1005]'}`}>
+                        <span className="text-white opacity-50 mr-1">V{idx.toString(16).toUpperCase()}</span> 
+                        {val.toString(16).padStart(2, '0').toUpperCase()}
+                    </div>
+                ))}
+            </div>
+            <p className="text-[10px] mt-2 text-center text-red-400 opacity-80">*VF acts as the Carry/Collision Flag</p>
+        </div>
         </div>
     </section>
     
