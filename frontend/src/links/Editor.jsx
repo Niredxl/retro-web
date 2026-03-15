@@ -50,7 +50,7 @@ function Editor(){
     i: 0,
     sp: 0
   });
-  const [isPaused, setIsPaused] = useState(false);
+  const [isPaused, setIsPaused] = useState(true);
   const [speed, setSpeed] = useState(10);
   const isPausedRef = useRef(isPaused);
   const speedRef = useRef(speed);
@@ -235,7 +235,9 @@ function Editor(){
     {/*video output*/}
     <section className="w-full lg:w-1/2 bg-white/80 p-6 lg:p-10 flex flex-col items-center overflow-y-auto">  
       {/* The "Device" Container */}
-      <div className="w-full max-w-md bg-[#dedede] border border-[#333] rounded-[2.5rem] p-4 sm:p-6 shadow-xl flex flex-col items-center font-mono mb-10">
+      <div className={`w-full max-w-md mb-10 border border-[#333] rounded-[2.5rem] p-4 sm:p-6 shadow-xl flex flex-col items-center font-mono transition-colors duration-500 ${
+          !isPaused ? 'bg-[#e2e6d8]' : 'bg-[#dedede]'
+      }`}>
         
         {/* 1. The Screen */}
         <div className="w-full aspect-[4/3] bg-[#2e3b2c] rounded-3xl mb-6 relative flex items-center justify-center p-2 shadow-inner overflow-hidden">
@@ -248,13 +250,21 @@ function Editor(){
              />
         </div>
 
+        <div 
+                className={`absolute inset-0 z-20 pointer-events-none transition-opacity duration-500 ${
+                    !isPaused 
+                    ? 'bg-primary opacity-30 mix-blend-overlay' 
+                    : 'opacity-0'
+                }`}
+             ></div>
+
         {/* 2. Main Control Bar */}
         <div className="w-11/12 bg-[#36210b] flex justify-between items-center rounded-xl px-6 py-3 shadow-[0_0_15px_rgba(0,0,0,0.3)] text-[#f8e8d4] text-sm md:text-base mb-6">
             <button 
               onClick={() => setIsPaused(false)} 
               className={`hover:text-white flex items-center gap-2 transition-opacity ${!isPaused ? 'opacity-50 cursor-default' : ''}`}
             >
-               <span className="text-[10px]">▶</span> Run
+               <span className="text-[10px]"></span> Run
             </button>
             <button 
               onClick={() => setIsPaused(true)} 
@@ -300,6 +310,7 @@ function Editor(){
         </div>
 
       </div>
+      
         
         <div className="grid grid-cols-1 md:grid-cols- gap-2">
           <div className="w-full max-w-lg bg-[#2B1B09] border-2 border-black rounded-xl p-4 font-mono text-[#E1AD66] shadow-lg">
