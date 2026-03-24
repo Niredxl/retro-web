@@ -7,7 +7,7 @@ import { NavLink } from 'react-router-dom';
 // destinations for the navbar links
 const navLinks = [
   { title: "Home", href: "/"},
-  { title: "Code", href: "/"},
+  { title: "Code", href: "/code"},
   { title: "Documentation", href: "/docs"},
 ];
 

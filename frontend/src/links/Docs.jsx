@@ -49,10 +49,10 @@ function Docs () {
     return(
      <PageTransition>
             <SidebarLayout props="Content">
-                <div className="flex justify-center min-h-screen p-6 md:p-20 bg-white/87">
+                <div className="flex justify-center min-h-screen   bg-white/87">
                     <div className="pd-10 w-full max-w-4xl">
                         
-                        <article className="prose lg:prose-xl prose-headings:text-gray-800 text-gray-600">
+                        <article className="prose prose-slate max-w-none prose-headings:font-bold prose-headings:tracking-tight prose-h1:text-4xl prose-code:before:content-none prose-code:after:content-noneprose-code:bg-gray-100 prose-code:text-rose-600 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded-md prose-code:font-mediumprose-pre:bg-slate-900 prose-pre:shadow-2xl prose-pre:rounded-xlprose-li:my-1">
                             {isLoading && <p className="animate-pulse">Loading documentation...</p>}
                             
                             {hasError && (

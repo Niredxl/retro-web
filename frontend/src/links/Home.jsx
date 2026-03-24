@@ -6,12 +6,12 @@ import { createScopedAnimate } from 'framer-motion';
 
 function App() {
   const coreData = [
-    { title: "CHIP 8", desc: "Implemented using an emulator by James Griffin (GPL 2.0 license)", status: "Available" },
-    { title: "Lorem ipsum dolor", desc: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore.", status: "Coming Soon" },
-    { title: "Lorem ipsum dolor", desc: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore.", status: "Coming Soon" },
-    { title: "Lorem ipsum dolor", desc: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore.", status: "Coming Soon" },
-    { title: "Lorem ipsum dolor", desc: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore.", status: "Coming Soon" },
-    { title: "Lorem ipsum dolor", desc: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore.", status: "Coming Soon" },
+    { title: "CHIP 8", desc: "Before you tackle silicon, master the virtual machine. Implemented using an emulator by James Griffin (GPL 2.0 license)", status: "Available" },
+    { title: "Intel 8080", desc: "Released in 1974, the Intel 8080 is an 8-bit microprocessor that became the industry standard of its era, famous for powering the legendary Space Invaders arcade cabinet.", status: "Coming Soon" },
+    { title: "MOS Technology 6502", desc: "The MOS 6502 was the affordable, highly efficient powerhouse behind the Nintendo Entertainment System (NES), Commodore 64, and Apple II.", status: "Coming Soon" },
+    { title: "Shap LR35902", desc: "Powering a generation of portable gaming, the Sharp LR35902 is the custom silicon brain behind the original Nintendo Game Boy.", status: "Coming Soon" },
+    { title: "More Coming Soon", desc: "....", status: "Coming Soon" },
+    { title: "More Coming Soon", desc: "....", status: "Coming Soon" },
   ];
   return (
     <PageTransition>
@@ -22,10 +22,7 @@ function App() {
               Instruction Set Architecture Simulation
             </h1>
             <p className="text-lg text-gray-600 leading-relaxed">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod 
-              tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim 
-              veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea 
-              commodo consequat.
+              Your step-by-step guide to understanding CPU emulation. Explore detailed architecture breakdowns, memory maps, and instruction sets
             </p>
           </div>
           <div>

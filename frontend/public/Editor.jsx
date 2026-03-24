@@ -50,16 +50,12 @@ function Editor(){
     i: 0,
     sp: 0
   });
-  
   const [activeSystem, setActiveSystem] = useState('CHIP8');
   const [isPaused, setIsPaused] = useState(true);
   const [speed, setSpeed] = useState(10);
-
-  const activeSystemRef = useRef(activeSystem);
   const isPausedRef = useRef(isPaused);
   const speedRef = useRef(speed);
-  const frameCountRef = useRef(0);
-
+  const frameCountRef = useRef(0)
   const memoryRows = Array(8).fill("0000 0000 0000 0000");
 
   const fileInputRef = useRef(null);
@@ -70,13 +66,8 @@ function Editor(){
 
   const handleStep = () => {
     if (coreRef.current && isPaused) {
-      
-      // [CHANGED] Execute the correct instruction based on the core
-      if (activeSystemRef.current === 'CHIP8' && typeof coreRef.current.cycle === 'function') {
-          coreRef.current.cycle(); 
-      } else if (activeSystemRef.current === 'GAMEBOY' && typeof coreRef.current.runFrame === 'function') {
-          coreRef.current.runFrame(); 
-      }
+      // Execute a single CPU instruction
+      coreRef.current.cycle(); 
       
       // Instantly update the visuals and Inspector
       const videoBuffer = coreRef.current.getVideoBufferPointer();
@@ -84,36 +75,25 @@ function Editor(){
       updateInspectorState();
     }
   };
+
   const updateInspectorState = () => {
-    // [CHANGED] Only update the inspector if we are running CHIP-8
-    if(!coreRef.current || activeSystemRef.current !== 'CHIP8') return;
-    
-    try {
-        const vRegs = coreRef.current.getRegisters();
-        setCpuState({
-          v: new Uint8Array(vRegs),
-          pc: coreRef.current.getPC(),
-          i: coreRef.current.getI(),
-          sp: coreRef.current.getSP()
-        });
-    } catch (err) {
-        console.warn("Inspector tracking unavailable for this core.");
-    }
+    if(!coreRef.current) return;
+    const vRegs = coreRef.current.getRegisters();
+    setCpuState({
+      v: new Uint8Array(vRegs),
+      pc: coreRef.current.getPC(),
+      i: coreRef.current.getI(),
+      sp: coreRef.current.getSP()
+    });
   };
 
   // [NEW] Reset function for the new UI
   const handleReset = () => {
-    setIsPaused(true); 
+    setIsPaused(true); // Pause execution
     if (coreRef.current) {
       try {
-        // [CHANGED] Only compile text if we are in CHIP-8 mode
-        if (activeSystemRef.current === 'CHIP8') {
-            const romBytes = compileHexToBytes(code);
-            coreRef.current.loadROM(romBytes); 
-        } else {
-            console.log("Resetting the Game Boy requires re-importing the ROM file.");
-            return;
-        }
+        const romBytes = compileHexToBytes(code);
+        coreRef.current.loadROM(romBytes); // Reload the current code
         
         // Force a screen and inspector update
         const videoBuffer = coreRef.current.getVideoBufferPointer();
@@ -175,14 +155,7 @@ function Editor(){
       // 4. Initialize the requested core
       try {
         const module = await window[globalFuncName]();
-        
-        // [CHANGED] Pick the right class based on the system!
-        if (activeSystem === 'CHIP8') {
-            coreRef.current = new module.RetroCore(); 
-        } else if (activeSystem === 'GAMEBOY') {
-            coreRef.current = new module.GbCore(); 
-        }
-        
+        coreRef.current = new module.RetroCore(); 
         console.log(`${activeSystem} Core Initialized successfully!`);
         
         // Restart the render loop for the new core
@@ -204,19 +177,8 @@ function Editor(){
   const renderLoop = () => {
     if (coreRef.current && canvasRef.current){
       if (!isPausedRef.current){
-        
-        // [CHANGED] Execute the correct logic based on the active system
-        if (activeSystemRef.current === 'CHIP8') {
-            if (typeof coreRef.current.cycle === 'function') {
-                for (let i = 0; i < speedRef.current; i++){
-                    coreRef.current.cycle();
-                }
-            }
-        } else if (activeSystemRef.current === 'GAMEBOY') {
-            if (typeof coreRef.current.runFrame === 'function') {
-                coreRef.current.runFrame();
-            }
-        }
+        for (let i = 0; i < speedRef.current; i++){
+        coreRef.current.cycle();
 
         const videoBuffer = coreRef.current.getVideoBufferPointer();
         renderToCanvas(videoBuffer);
@@ -226,6 +188,9 @@ function Editor(){
           updateInspectorState();
         }
       }
+      
+      }
+      
     }
     requestRef.current = requestAnimationFrame(renderLoop);
   };
@@ -270,52 +235,32 @@ function Editor(){
     };
   }, []);
 
- const renderToCanvas = (videoBuffer) => {
-    // 1. Safety check: don't draw if the buffer is empty
-    if (!videoBuffer || videoBuffer.length === 0) return;
+  const renderToCanvas = (videoBuffer) => {
+    const ctx = canvasRef.current.getContext('2d');
+    const width = 64;
+    const height = 32;
 
-    const canvas = canvasRef.current;
-    const ctx = canvas.getContext('2d');
-
-    // 2. Auto-detect the system strictly by checking the C++ array size!
-    // CHIP-8 sends 2,048 pixels. Game Boy sends 23,040 pixels.
-    const isGameBoy = videoBuffer.length > 2048; 
-    const width = isGameBoy ? 160 : 64;
-    const height = isGameBoy ? 144 : 32;
-
-    // 3. Force the canvas HTML element to match instantly
-    if (canvas.width !== width) canvas.width = width;
-    if (canvas.height !== height) canvas.height = height;
-
-    // 4. Create the pixel container
     const imgData = ctx.createImageData(width, height);
+
     const canvasUint32 = new Uint32Array(imgData.data.buffer);
 
-    // 5. Safely copy the pixels
-    try {
-        if (videoBuffer.length <= canvasUint32.length) {
-            canvasUint32.set(videoBuffer);
-            ctx.putImageData(imgData, 0, 0);
-        }
-    } catch (err) {
-        console.error(`Canvas Error! Tried to fit ${videoBuffer.length} pixels into a ${canvasUint32.length} slot.`);
+    if (videoBuffer && videoBuffer.length > 0) {
+        canvasUint32.set(videoBuffer);
     }
+
+    ctx.putImageData(imgData, 0, 0);
   };
 
   const handleAssemble = () => {
-    // [NEW] Guard against Game Boy compilation
-    if (activeSystemRef.current !== 'CHIP8') {
-        alert("The text editor is only for CHIP-8! Please use 'Import ROM' for Game Boy.");
-        return;
-    }
-
     try {
       if (!coreRef.current){
         alert("Emulator core is still loading...");
         return;
       }
       const romBytes = compileHexToBytes(code);
+
       coreRef.current.loadROM(romBytes);
+
       console.log("Build successful! ROM injected into memory.");
     } catch (error){
       alert("Compilation error: " + error.message);
@@ -324,7 +269,7 @@ function Editor(){
 
   return(
   <div className="relative z-10 flex flex-col lg:flex-row flex-1 overflow-hidden border-t-2">
-    <section className="w-full h-auto lg:w-1/2 bg-primary/95 p-6 lg:p-10 flex flex-col border-r-2 border-black font-mono min-h-">
+    <section className="w-full h-auto lg:w-1/2 bg-primary/95 p-6 lg:p-10 flex flex-col border-r-2 border-black font-mono">
       <input 
           type="file" 
           ref={fileInputRef} 
@@ -362,7 +307,7 @@ function Editor(){
 
     </section>
     {/*video output*/}
-    <section className="w-full lg:w-1/2 bg-white/80 p-6 lg:p-10 flex flex-col items-center overflow-y-auto min-h-50">  
+    <section className="w-full lg:w-1/2 bg-white/80 p-6 lg:p-10 flex flex-col items-center overflow-y-auto">  
       {/* The "Device" Container */}
       <div className={`w-full max-w-md mb-10 border border-[#333] rounded-[2.5rem] p-4 sm:p-6 shadow-xl flex flex-col items-center font-mono transition-colors duration-500 ${
           !isPaused ? 'bg-[#e2e6d8]' : 'bg-[#dedede]'
