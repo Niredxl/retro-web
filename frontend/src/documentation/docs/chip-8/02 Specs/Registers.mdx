@@ -1,0 +1,33 @@
+# Registers and Timers
+
+To manage state, the CHIP-8 virtual machine utilizes a specific set of hardware registers. In your emulator code, these will likely be implemented as standard variables or arrays of unsigned 8-bit integers (`Uint8Array` in JavaScript).
+
+## General Purpose Registers (`V0` to `VF`)
+
+CHIP-8 has 16 general-purpose 8-bit registers, commonly referred to as `Vx`, where `x` is a hexadecimal digit (`0` through `F`).
+
+* **`V0` to `VE`**: These can be used by programs for any purpose (math, storing variables, etc.).
+* **`VF`**: This register is special and should **not** be used by programs directly. The emulator uses it as a hardware flag. It acts as a "carry flag" for addition, a "no borrow flag" for subtraction, and a "collision flag" for drawing sprites.
+
+## The Index Register (`I`)
+
+There is one 16-bit register called `I`. 
+
+This register is generally used to store memory addresses. Because CHIP-8 memory only goes up to `0xFFF`, only the lowest 12 bits are actually used by the CPU, but it's typically stored as a standard 16-bit integer.
+
+## Special Purpose Registers
+
+These registers handle the internal execution state of the emulator:
+
+* **Program Counter (`PC`)**: A 16-bit register that holds the memory address of the next instruction to execute. It should initialize to `0x200` (where the ROM is loaded).
+* **Stack Pointer (`SP`)**: An 8-bit register that points to the topmost level of the stack.
+
+## Timers
+
+CHIP-8 has two timers. Both timers decrement at a rate of **60Hz** (60 times per second) as long as their value is greater than zero.
+
+### Delay Timer (`DT`)
+Used for timing events in games. Programs can read and write to this timer. For example, a game might set the delay timer to 60 and wait until it reaches 0 before allowing the player to move again (a 1-second delay).
+
+### Sound Timer (`ST`)
+Used for sound effects. When this timer is non-zero, the emulator should emit a single, continuous beep. The program cannot read this timer, only write a value to it to start the sound.

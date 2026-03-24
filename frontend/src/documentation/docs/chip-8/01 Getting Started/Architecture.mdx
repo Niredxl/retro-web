@@ -1,0 +1,33 @@
+# System Architecture & Memory
+
+The CHIP-8 system is capable of accessing up to 4KB (4096 bytes) of RAM. All memory addresses are 12-bit, meaning they range from `0x000` to `0xFFF`.
+
+
+
+## The Memory Map
+
+Historically, the CHIP-8 interpreter itself lived in the first 512 bytes of memory (`0x000` to `0x1FF`). Because of this, CHIP-8 programs are expected to be loaded starting at address `0x200`.
+
+Here is the standard layout you should implement in your emulator's memory array:
+
+* **`0x000` - `0x1FF`**: Reserved for the interpreter. In modern emulators, this space is mostly empty, but it is standard practice to store the **font set** (the sprite data for numbers 0-9 and letters A-F) in this area (usually starting at `0x050`).
+* **`0x200` - `0xFFF`**: Program / ROM space. This is where you will load the `.ch8` ROM files.
+* **`0xEA0` - `0xEFF`**: Call stack, internal use, and other variables (historically, though modern emulators usually keep the stack entirely separate from main memory).
+
+## The Display
+
+The display is completely monochrome. It is 64 pixels wide and 32 pixels tall. 
+Drawing graphics is handled exclusively by sprites, which are always 8 pixels wide and 1 to 15 pixels tall. 
+
+> **Important:** CHIP-8 uses **XOR drawing**. If a sprite is drawn over existing pixels on the screen, the overlapping pixels are erased. This is how CHIP-8 handles basic animation and collision detection.
+
+## Keyboard Input
+
+CHIP-8 originally used a 16-key hex pad. When building an emulator on a modern computer, you will usually map these keys to the left side of your QWERTY keyboard:
+
+```text
+Original Pad      Modern Mapping
+1 2 3 C           1 2 3 4
+4 5 6 D           Q W E R
+7 8 9 E           A S D F
+A 0 B F           Z X C V

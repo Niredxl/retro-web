@@ -1,0 +1,74 @@
+# The Instruction Set (Opcodes)
+
+CHIP-8 utilizes **2-byte (16-bit)** opcodes. All instructions are written in hexadecimal format. There are 35 standard opcodes in the original CHIP-8 specification.
+
+### Key Variables
+* **`NNN`**: A 12-bit memory address (e.g., `0x200`).
+* **`NN`**: An 8-bit constant/number (e.g., `0xFF`).
+* **`X` and `Y`**: 4-bit register identifiers (`0` through `F`).
+* **`I`**: The special 16-bit Index register used for memory pointing.
+
+---
+
+## Display & Graphics
+
+### `00E0` — Clear Screen
+**Assembly:** `CLS`
+
+Instantly clears all pixels on the screen. This is typically used at the start of a frame or when transitioning between game screens.
+
+### `DXYN` — Draw Sprite
+**Assembly:** `DRW VX, VY, N`
+
+The core of CHIP-8 graphics. It reads `N` bytes from memory starting at the address stored in **`I`**. These are drawn as an 8xN sprite at coordinates (`VX`, `VY`). 
+
+> **Collision Detection:** If a pixel is flipped from set to unset during the draw, the **VF** register is set to `1`. Otherwise, it is set to `0`.
+
+---
+
+## Control Flow
+
+### `1NNN` — Jump
+**Assembly:** `JMP NNN`
+
+Sets the Program Counter (`PC`) to **`NNN`**. Use this to loop code or jump to different subroutines.
+
+### `3XNN` — Skip If Equal
+**Assembly:** `SE VX, NN`
+
+Compares register **`VX`** to the constant **`NN`**. If they are equal, the interpreter increments the Program Counter by 2, effectively "skipping" the next instruction.
+
+### `4XNN` — Skip If Not Equal
+**Assembly:** `SNE VX, NN`
+
+The inverse of `3XNN`. Skips the next instruction if **`VX`** and **`NN`** are **not** equal.
+
+---
+
+## Registers & Memory
+
+### `6XNN` — Set Register
+**Assembly:** `MOV VX, NN`
+
+Loads the immediate 8-bit value **`NN`** into register **`VX`**.
+
+### `ANNN` — Set Index Register
+**Assembly:** `LDI NNN`
+
+Sets the 16-bit Index register **`I`** to point to the memory address **`NNN`**. This is usually called right before a `DRW` (Draw) command to tell the CPU where the sprite data lives.
+
+---
+
+## Math & Logic
+
+### `8XY4` — Add with Carry
+**Assembly:** `ADD VX, VY`
+
+Adds the value of **`VY`** to **`VX`**. 
+* If the result is greater than 255 (overflow), **`VF`** is set to `1`.
+* Otherwise, **`VF`** is set to `0`.
+
+### `CXNN` — Random
+**Assembly:** `RND VX, NN`
+
+Generates a random number between `0` and `255`, performs a bitwise **`AND`** with the value **`NN`**, and stores the final result in **`VX`**.

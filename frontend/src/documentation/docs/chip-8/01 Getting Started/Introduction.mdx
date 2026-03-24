@@ -1,0 +1,20 @@
+# Introduction to CHIP-8
+
+CHIP-8 is not a physical console; it is an interpreted programming language and virtual machine developed by Joseph Weisbecker in the mid-1970s. It was initially designed to allow video games to be easily programmed for early 8-bit microcomputers like the COSMAC VIP.
+
+Because CHIP-8 is a virtual machine, building an emulator for it is often the "Hello World" project for developers wanting to learn emulation. It is simple, well-documented, and highly rewarding.
+
+## System Specifications
+
+When writing a CHIP-8 emulator, you are essentially simulating a machine with the following hardware specs:
+
+* **Memory:** 4KB (4096 bytes) of RAM.
+* **Display:** 64x32 pixels, monochrome (black and white).
+* **Registers:** 16 general-purpose 8-bit registers, plus a 16-bit index register.
+* **Stack:** An array capable of holding up to 16 16-bit addresses (used for calling subroutines).
+* **Timers:** Two timers (Delay and Sound) that count down at 60Hz.
+* **Input:** A 16-key hexadecimal keypad (0-F).
+
+## Why Build a CHIP-8 Emulator?
+
+Unlike writing a GameBoy or NES emulator, CHIP-8 has no complicated memory mappers, no hardware interrupts, and a very simple graphics pipeline. You can read the entire state of the machine at any given time, making debugging very straightforward.

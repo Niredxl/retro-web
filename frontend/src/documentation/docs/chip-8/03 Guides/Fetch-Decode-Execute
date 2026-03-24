@@ -1,0 +1,76 @@
+# The CPU Cycle: Fetch, Decode, Execute
+
+At the core of every emulator is the main CPU loop. For CHIP-8, this loop runs continuously, performing three distinct steps: **Fetch**, **Decode**, and **Execute**.
+
+Depending on your emulator's speed, this cycle usually runs anywhere from 500 to 1000 times per second, while the visual timers only update 60 times per second.
+
+---
+
+## 1. Fetching the Opcode
+
+Instructions in CHIP-8 are 2 bytes (16 bits) long. When writing your emulator in x86 Assembly, you must account for **endianness**. CHIP-8 memory expects the most significant byte first (Big-Endian), but x86 architecture is Little-Endian. 
+
+When you read a 16-bit word from memory, you need to swap the bytes.
+
+```nasm
+; Assume rdi points to the base of CHIP-8 RAM (4KB array)
+; Assume rsi holds the current Program Counter (PC), starting at 0x200
+
+fetch_cycle:
+    ; Load 16-bit word from memory (RAM base + PC)
+    movzx ax, word [rdi + rsi]  
+
+    ; Swap the high and low bytes to fix x86 Little-Endianness
+    ; e.g., 0xE000 becomes 0x00E0
+    rol ax, 8                   
+
+    ; Increment the Program Counter by 2 for the next instruction
+    add rsi, 2
+```
+**Crucial Step**: Always increment the Program Counter (rsi in this example) immediately after fetching. If a jump instruction executes later, it will simply overwrite this register with the new address.
+## 2. Decoding the Opcode
+
+Now that we have our 16-bit opcode in ax, we need to decode it. We isolate the first 4 bits (the "nibble") using a bitwise AND mask, then route the logic.
+
+While high-level languages use switch statements, in Assembly, you will use cmp (compare) and conditional jumps (or a jump table for better performance).
+```
+decode_cycle:
+    mov bx, ax          ; Copy the opcode to bx for masking
+    and bx, 0xF000      ; Mask out the lower 12 bits (keep the prefix)
+
+    cmp bx, 0x1000      ; Starts with 1: Jump (1NNN)
+    je instr_jump
+
+    cmp bx, 0xA000      ; Starts with A: Set I Register (ANNN)
+    je instr_set_i
+
+    cmp bx, 0x8000      ; Starts with 8: Math/Logic
+    je decode_math
+
+    ; Handle unknown opcodes or route to next step...
+    jmp unknown_opcode
+
+decode_math:
+    ; If it starts with 8, we must check the LAST digit to know the exact math operation
+    mov bx, ax
+    and bx, 0x000F      ; Isolate the last 4 bits
+    cmp bx, 0x0004      ; Is it 8XY4 (Add with carry)?
+    je instr_add_carry
+```
+
+## 3. Executing the Opcode
+
+Once routed to the correct execution block, extract the necessary variables (like the address NNN or register identifiers X and Y) and perform the hardware operation.
+```
+instr_jump:
+    ; Opcode is still in ax (e.g., 0x1228)
+    ; We need to drop the '1' and keep '0x228'
+    and ax, 0x0FFF      ; Mask out the first nibble
+    
+    ; Execute: Set the PC (rsi) to the new address
+    movzx rsi, ax       
+    
+    ; Cycle complete, loop back to fetch the next instruction
+    jmp fetch_cycle
+```
+Once execution finishes and jumps back to fetch_cycle, the CPU heartbeat continues.

@@ -4,19 +4,41 @@
     "type": "category",
     "children": [
       {
-        "label": "introduction",
-        "type": "link",
-        "path": "/chip-8/introduction"
+        "label": "01 Getting Started",
+        "type": "category",
+        "children": [
+          {
+            "label": "Architecture",
+            "type": "link",
+            "path": "/chip-8/01 Getting Started/Architecture"
+          },
+          {
+            "label": "Introduction",
+            "type": "link",
+            "path": "/chip-8/01 Getting Started/Introduction"
+          }
+        ]
       },
       {
-        "label": "opcodes",
-        "type": "link",
-        "path": "/chip-8/opcodes"
+        "label": "02 Specs",
+        "type": "category",
+        "children": [
+          {
+            "label": "Opcodes",
+            "type": "link",
+            "path": "/chip-8/02 Specs/Opcodes"
+          },
+          {
+            "label": "Registers",
+            "type": "link",
+            "path": "/chip-8/02 Specs/Registers"
+          }
+        ]
       },
       {
-        "label": "test2",
-        "type": "link",
-        "path": "/chip-8/test2"
+        "label": "03 Guides",
+        "type": "category",
+        "children": []
       }
     ]
   },
