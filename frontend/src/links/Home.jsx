@@ -22,18 +22,18 @@ function App() {
               Instruction Set Architecture Simulation
             </h1>
             <p className="text-lg text-gray-600 leading-relaxed">
-              Your step-by-step guide to understanding CPU emulation. Explore detailed architecture breakdowns, memory maps, and instruction sets
+              Your place to understanding CPU emulation. Explore detailed architecture breakdowns, memory maps, and instruction sets
             </p>
           </div>
           <div>
-            <div className="h-auto border-2 border-primary flex items-center justify-center">
-              <img src="/cassete.png" alt="Hero Banner"
+            <div className="h-auto  border-primary flex items-center justify-center">
+              <img src="/CPU.png" alt="Hero Banner"
               className="w-full h-auto rounded-lg shadow-md"></img>
             </div>
           </div>
         </section>
 
-        <section className="flex flex-col md:flex-row md:gap-40 justify-center py-10 gap-8">
+        {/* <section className="flex flex-col md:flex-row md:gap-40 justify-center py-10 gap-8">
           <button className="px-8 py-4 bg-white border-2 border-primary text-primary font-bold
           hover:bg-primary hover:text-white
           transition-all duration-200">
@@ -45,7 +45,7 @@ function App() {
           transition-all duration-200">
             Launch Saved Project
           </button>
-        </section>
+        </section> */}
       </div>
       <div className="relative max-w-7xl mx-auto w-full font-mono">
         
